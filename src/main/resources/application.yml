@@ -1,0 +1,20 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: investment_project
+  datasource:
+    url: jdbc:postgresql://localhost:5432/investments_api
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+token:
+  signing:
+    key: dfklfrjhekadfwsfsfvdfbsdvgdsdfasdfsfqwetw34efqw23dcvv1312
+
+
