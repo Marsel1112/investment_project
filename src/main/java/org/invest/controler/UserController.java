@@ -1,8 +1,7 @@
 package org.invest.controler;
 
 import lombok.RequiredArgsConstructor;
-import org.invest.dto.SignUser;
-import org.invest.dto.UserUpdateForm;
+import org.invest.dto.RegisterUserDto;
 import org.invest.entity.User;
 import org.invest.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -10,26 +9,32 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/api/user/")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/reg")
-    public ResponseEntity<Long> reg(@RequestBody SignUser signUser) {
-        User user = userService.createUser(signUser);
+    @PostMapping("/register")
+    public ResponseEntity<Long> register(@RequestBody RegisterUserDto registerUserDto) {
+        User user = userService.createUser(registerUserDto);
         return ResponseEntity.ok(user.getId());
     }
 
-    @PutMapping
-    public ResponseEntity<String> update(@RequestBody UserUpdateForm userUpdateForm) {
-        userService.updateUser(userUpdateForm);
-        return ResponseEntity.ok("Success");
+    @PostMapping("/login")
+    public ResponseEntity<Long> login(@RequestBody RegisterUserDto registerUserDto) {
+        User user = userService.createUser(registerUserDto);
+        return ResponseEntity.ok(user.getId());
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<String> delete(@PathVariable Long userId) {
-        userService.deleteUser(userId);
-        return ResponseEntity.ok("Success");
+    @PostMapping("/saved")
+    public ResponseEntity<Long> saved(@RequestBody RegisterUserDto registerUserDto) {
+        User user = userService.createUser(registerUserDto);
+        return ResponseEntity.ok(user.getId());
+    }
+
+    @PostMapping("/save")
+    public ResponseEntity<Long> save(@RequestBody RegisterUserDto registerUserDto) {
+        User user = userService.createUser(registerUserDto);
+        return ResponseEntity.ok(user.getId());
     }
 }

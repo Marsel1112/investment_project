@@ -1,9 +1,7 @@
 package org.invest.service;
 
 import lombok.RequiredArgsConstructor;
-import org.invest.dto.SignUser;
-import org.invest.dto.UserUpdateForm;
-import org.invest.entity.Role;
+import org.invest.dto.RegisterUserDto;
 import org.invest.entity.User;
 import org.invest.entity.enum_status_model.UserStatus;
 import org.invest.repository.RoleRepository;
@@ -20,44 +18,23 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public User getUserByDtoSignUser(SignUser signUser) {
-        User user = userRepository.getUserByEmail(signUser.getEmail());
+    public User getUserByDtoSignUser(RegisterUserDto registerUserDto) {
+        User user = userRepository.getUserByEmail(registerUserDto.getEmail());
 
-        if(comparePasswords(user,signUser.getPassword()))
+        if(comparePasswords(user, registerUserDto.getPassword()))
             return user;
         else
             throw new RuntimeException("Не правильный пароль!");
     }
 
-    public User createUser(SignUser signUser) {
+    public User createUser(RegisterUserDto registerUserDto) {
         return userRepository.save(
                 User.builder()
-                        .email(signUser.getEmail())
-                        .password(passwordEncoder.encode(signUser.getPassword()))
+                        .email(registerUserDto.getEmail())
+                        .password(passwordEncoder.encode(registerUserDto.getPassword()))
                         .status(UserStatus.ACTIVE)
                         .dateCreated(LocalDateTime.now())
                         .build());
-    }
-
-    public void updateUser(UserUpdateForm userUpdateForm) {
-        User user = userRepository.getUserByEmail(userUpdateForm.getEmail());
-
-        if(userUpdateForm.getName() != null)
-            user.setName(userUpdateForm.getName());
-        if(userUpdateForm.getLastName() != null)
-            user.setLastName(userUpdateForm.getLastName());
-        if(userUpdateForm.getSurName() != null)
-            user.setSurname(userUpdateForm.getSurName());
-        if(userUpdateForm.getRoleName() != null)
-            user.setRole(roleRepository.findByName(userUpdateForm.getRoleName()));
-
-        userRepository.save(user);
-    }
-
-    public void deleteUser(Long userIdr) {
-        User user = userRepository.getReferenceById(userIdr);
-        user.setStatus(UserStatus.REMOVE);
-        userRepository.save(user);
     }
 
     private boolean comparePasswords(User user, String password) {

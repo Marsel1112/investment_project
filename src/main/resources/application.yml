@@ -16,5 +16,7 @@ spring:
 token:
   signing:
     key: dfklfrjhekadfwsfsfvdfbsdvgdsdfasdfsfqwetw34efqw23dcvv1312
+  auth:
+    bearer : 8_OCCSW2yBWZ6PkdBAI3ADVOIoORmdwT
 
 

@@ -2,8 +2,7 @@ package org.invest.service;
 
 import lombok.RequiredArgsConstructor;
 import org.invest.dto.JwtAuthenticationResponse;
-import org.invest.dto.LoginUser;
-import org.invest.dto.SignUser;
+import org.invest.dto.RegisterUserDto;
 import org.invest.entity.AccessToken;
 import org.invest.entity.RefreshToken;
 import org.invest.entity.User;
@@ -11,7 +10,6 @@ import org.invest.repository.AccessTokenRepository;
 import org.invest.repository.RefreshTokenRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,8 +21,8 @@ public class AuthService {
     private final AccessTokenRepository accessTokenRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public JwtAuthenticationResponse getJwtAuthenticationResponseInDataBase(SignUser signUser) {
-        User user = userService.getUserByDtoSignUser(signUser);
+    public JwtAuthenticationResponse getJwtAuthenticationResponseInDataBase(RegisterUserDto registerUserDto) {
+        User user = userService.getUserByDtoSignUser(registerUserDto);
         RefreshToken refreshToken = getValidRefreshToken(refreshTokenRepository.getByUserId(user.getId()));
 
         if(refreshToken != null) {
@@ -36,11 +34,11 @@ public class AuthService {
                     getAccessTokenByRefreshToken(refreshToken.getValue()),refreshToken.getValue()
             );
         }
-        return insertJwtAuthenticationResponse(signUser);
+        return insertJwtAuthenticationResponse(registerUserDto);
     }
 
-    public JwtAuthenticationResponse insertJwtAuthenticationResponse(SignUser signUser) {
-        User user = userService.getUserByDtoSignUser(signUser);
+    public JwtAuthenticationResponse insertJwtAuthenticationResponse(RegisterUserDto registerUserDto) {
+        User user = userService.getUserByDtoSignUser(registerUserDto);
 
         RefreshToken refreshToken = refreshTokenRepository.save(
                                     RefreshToken.builder()

@@ -34,14 +34,6 @@ public class User implements UserDetails {
 
     private String name;
 
-    @Column(name = "last_name")
-    private String lastName;
-
-    private String surname;
-
-    @Enumerated(EnumType.STRING)
-    private UserStatus status;
-
     @ManyToOne
     @JoinColumn(name = "role_id",nullable = false)
     private Role role;
