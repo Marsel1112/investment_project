@@ -1,4 +1,4 @@
-package org.invest.exeption;
+package org.invest.exception;
 
 import feign.Response;
 import feign.codec.ErrorDecoder;

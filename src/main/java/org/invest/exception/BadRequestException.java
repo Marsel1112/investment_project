@@ -1,4 +1,4 @@
-package org.invest.exeption;
+package org.invest.exception;
 
 public class BadRequestException extends RuntimeException {
     public BadRequestException(String message){

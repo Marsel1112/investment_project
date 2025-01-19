@@ -1,11 +1,8 @@
 package org.invest.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Builder
@@ -22,7 +19,7 @@ public class AccessToken {
     @Column(name = "date_created")
     private LocalDateTime dateCreated;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "refresh_token_id", nullable = false)
     private RefreshToken refreshToken;
 

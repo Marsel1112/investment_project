@@ -1,4 +1,4 @@
-package org.invest.service;
+package org.invest.service.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -1,4 +1,4 @@
-package org.invest.exeption;
+package org.invest.exception;
 
 public class InternalServerErrorException extends RuntimeException{
     public InternalServerErrorException(String message){

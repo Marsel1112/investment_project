@@ -1,4 +1,4 @@
-package org.invest.exeption;
+package org.invest.exception;
 
 public class NotFoundException extends RuntimeException{
     public NotFoundException(String message){

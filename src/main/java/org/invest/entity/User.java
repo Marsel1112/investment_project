@@ -1,6 +1,5 @@
 package org.invest.entity;
 
-import org.invest.entity.enum_status_model.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,9 +33,15 @@ public class User implements UserDetails {
 
     private String name;
 
-    @ManyToOne
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id",nullable = false)
     private Role role;
+
+    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
+    private List<UsersDailyOpenCloseHistory> dailyOpenCloseHistoryList;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
