@@ -24,7 +24,7 @@ public class DailyOpenClose implements Comparable<DailyOpenClose> {
     private String status;
 
     @Column(name = "date_from")
-    private LocalDate from;
+    private LocalDate dateFrom;
 
     private String symbol;
 
@@ -43,10 +43,10 @@ public class DailyOpenClose implements Comparable<DailyOpenClose> {
     private BigDecimal preMarket;
 
     @OneToMany(mappedBy = "dailyOpenClose",fetch = FetchType.LAZY)
-    private Set<UsersDailyOpenCloseHistory> users;
+    private Set<UsersDailyOpenCloseHistory> userHistories;
 
     @Override
     public int compareTo(DailyOpenClose o) {
-        return this.from.compareTo(o.from);
+        return this.dateFrom.compareTo(o.dateFrom);
     }
 }

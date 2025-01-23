@@ -48,6 +48,10 @@ public class UserService {
                         .build());
     }
 
+    public User getUserByUserId(Long userId) {
+        return userRepository.getUserById(userId);
+    }
+
     private Role getBasikRole(){
         return roleRepository.findByName("USER");
     }

@@ -6,10 +6,7 @@ import org.invest.dto.DailyOpenCloseDto;
 import org.invest.dto.DailyOpenCloseDtoBetweenDates;
 import org.invest.dto.TickerDto;
 import org.invest.entity.DailyOpenClose;
-import org.invest.entity.User;
 import org.invest.repository.DailyOpenCloseRepository;
-import org.invest.repository.UserRepository;
-import org.invest.repository.UsersDailyOpenCloseHistoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,7 +26,9 @@ public class DailyOpenCloseService {
                                                                   Long userId) {
 
         List<DailyOpenClose> usersDailyOpenCloseList = historyService.getDailyOpenClose(betweenDates, userId);
+        if(usersDailyOpenCloseList.isEmpty()) {
 
+        }
         addMissingDays(usersDailyOpenCloseList,betweenDates);
         historyService.saveListDailyOpenCloseHistory(usersDailyOpenCloseList,userId);
 
@@ -54,12 +53,15 @@ public class DailyOpenCloseService {
 
         for (int i = startDate.getDayOfYear()-1; i < finishDate.getDayOfYear(); i++) {
 
-            startDate = startDate.plusDays(1);
+            DailyOpenClose dailyOpenClose = null;
+            try {
+                dailyOpenClose = usersDailyOpenCloseList.get(count);
+            }catch (IndexOutOfBoundsException ignored){}
 
-            DailyOpenClose dailyOpenClose = usersDailyOpenCloseList.get(count);
 
-            if(dailyOpenClose.getFrom().isEqual(startDate)){
+            if(dailyOpenClose != null && dailyOpenClose.getDateFrom().isEqual(startDate)){
                 count++;
+                startDate = startDate.plusDays(1);
                 continue;
             }
 
@@ -71,20 +73,24 @@ public class DailyOpenCloseService {
                 usersDailyOpenCloseList.add(newDailyOpenClose);
                 Collections.sort(usersDailyOpenCloseList);
                 count++;
+                startDate = startDate.plusDays(1);
                 continue;
             }
 
             usersDailyOpenCloseList.add(getDailyOpenCloseInFeignClient(betweenDates.getTicker(),startDate));
             Collections.sort(usersDailyOpenCloseList);
             count++;
+            startDate = startDate.plusDays(1);
         }
     }
+
+
 
     private DailyOpenClose getDailyOpenCloseInFeignClient(String ticker,LocalDate date){
         DailyOpenCloseDto dailyOpenClose = polygonClient.getPolygon(ticker,date);
         DailyOpenClose dailyOpenCloseResult =DailyOpenClose.builder()
                                                             .status(dailyOpenClose.getStatus())
-                                                            .from(dailyOpenClose.getFrom())
+                                                            .dateFrom(dailyOpenClose.getFrom())
                                                             .symbol(dailyOpenClose.getSymbol())
                                                             .open(dailyOpenClose.getOpen())
                                                             .high(dailyOpenClose.getHigh())
@@ -104,7 +110,7 @@ public class DailyOpenCloseService {
         for(DailyOpenClose dailyOpenClose : dailyOpenCloseList){
             dailyOpenCloseDtoList.add(DailyOpenCloseDto.builder()
                                                         .status(dailyOpenClose.getStatus())
-                                                        .from(dailyOpenClose.getFrom())
+                                                        .from(dailyOpenClose.getDateFrom())
                                                         .symbol(dailyOpenClose.getSymbol())
                                                         .open(dailyOpenClose.getOpen())
                                                         .high(dailyOpenClose.getHigh())

@@ -1,6 +1,7 @@
 package org.invest.filter;
 
 import io.jsonwebtoken.Claims;
+import org.invest.dto.CustomPrincipal;
 import org.invest.service.auth.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -33,10 +34,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 Claims claims = jwtService.validateToken(token);
                 String email = claims.getSubject();
+                Long userId = claims.get("id", Long.class);
 
                 if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    CustomPrincipal principal = new CustomPrincipal(email, userId);
                     UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(email, null, List.of());
+                            new UsernamePasswordAuthenticationToken(principal, null, List.of());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }

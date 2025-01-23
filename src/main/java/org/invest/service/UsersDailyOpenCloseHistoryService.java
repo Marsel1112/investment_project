@@ -2,7 +2,6 @@ package org.invest.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.invest.dto.DailyOpenCloseDto;
 import org.invest.dto.DailyOpenCloseDtoBetweenDates;
 import org.invest.entity.DailyOpenClose;
 import org.invest.entity.User;
@@ -25,7 +24,7 @@ public class UsersDailyOpenCloseHistoryService {
     public List<DailyOpenClose> getDailyOpenClose(DailyOpenCloseDtoBetweenDates betweenDates,
                                                   Long userId) {
         List<UsersDailyOpenCloseHistory> historyList =usersDailyOpenCloseHistoryRepository
-                .getUsersDailyOpenCloseHistoriesByUserIdAndSymbolAndDateFromBetween(userId,
+                .findByUserIdAndDailyOpenClose_SymbolAndDailyOpenClose_DateFromBetween(userId,
                                                                                     betweenDates.getTicker(),
                                                                                     betweenDates.getOpenDate(),
                                                                                     betweenDates.getCloseDate());
@@ -36,7 +35,7 @@ public class UsersDailyOpenCloseHistoryService {
     @Transactional
     public List<DailyOpenClose> getUserDailyOpenCloseHistory(Long userId,String symbol) {
         List<UsersDailyOpenCloseHistory> historyList =
-                usersDailyOpenCloseHistoryRepository.getUsersDailyOpenCloseHistoriesByUserIdAndSymbol(userId,symbol);
+                usersDailyOpenCloseHistoryRepository.findByUserIdAndDailyOpenClose_Symbol(userId,symbol);
         return getDailyOpenClose(historyList);
     }
 

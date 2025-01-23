@@ -12,5 +12,5 @@ import java.util.List;
 public interface DailyOpenCloseRepository extends JpaRepository<DailyOpenClose, Long> {
     DailyOpenClose findBySymbolAndDateFrom(String symbol, LocalDate dateFrom);
 
-    List<DailyOpenClose> findBySymbolAndUserAndDateFromBetween(String symbol, User user, LocalDate from, LocalDate to);
+
 }

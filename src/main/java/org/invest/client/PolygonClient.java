@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @FeignClient(value = "polygon.io",configuration = FeignConfig.class,url = "https://api.polygon.io")
 public interface PolygonClient {
-    @GetMapping("/v1/open-close/open-close/{ticker}/{date}")
+    @GetMapping("/v1/open-close/{ticker}/{date}")
     public DailyOpenCloseDto getPolygon(@PathVariable String ticker, @PathVariable LocalDate date);
 
 }
