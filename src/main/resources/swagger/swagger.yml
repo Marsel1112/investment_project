@@ -1,0 +1,198 @@
+openapi: 3.0.3
+
+info:
+  title: invest_service
+  description: |
+    Документация для работы с API invest_service.
+    Created by: Марсель Алдаров.
+  version: 1.0.0
+
+paths:
+  /api/user/register:
+    post:
+      summary: Регистрация нового пользователя
+      description: Регистрирует нового пользователя, создавая его в системе.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterUserDto'
+      responses:
+        '201':
+          description: Пользователь успешно создан
+          content:
+            application/json:
+              schema:
+                type: integer
+                example: 1
+  /api/user/login:
+    post:
+      summary: Авторизация пользователя
+      description: Авторизует пользователя и возвращает JWT токен для дальнейших запросов.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUser'
+      responses:
+        '200':
+          description: Успешная авторизация
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtAuthenticationResponse'
+  /api/user/saved:
+    get:
+      summary: Получить сохранённые данные по тикеру
+      description: Возвращает список данных о котировках для заданного тикера, сохранённого пользователем.
+      parameters:
+        - name: ticker
+          in: query
+          required: true
+          description: Тикер для получения данных
+          schema:
+            type: string
+            example: "AAPL"
+      responses:
+        '200':
+          description: Список сохранённых данных по тикеру
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DailyOpenCloseDto'
+  /api/user/save:
+    post:
+      summary: Сохранить данные по тикеру
+      description: Сохраняет данные по котировкам для заданного тикера и даты в системе пользователя.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DailyDtoBetweenDates'
+      responses:
+        '200':
+          description: Успешное сохранение данных
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DailyOpenCloseDto'
+
+components:
+  schemas:
+    RegisterUserDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: "Имя пользователя"
+          maxLength: 255
+        email:
+          type: string
+          description: "Адрес электронной почты"
+          minLength: 5
+          maxLength: 255
+        password:
+          type: string
+          description: "Пароль пользователя"
+          minLength: 5
+          maxLength: 50
+      required:
+        - name
+        - email
+        - password
+    LoginUser:
+      type: object
+      properties:
+        email:
+          type: string
+          description: "Адрес электронной почты"
+          minLength: 5
+          maxLength: 255
+        password:
+          type: string
+          description: "Пароль пользователя"
+          minLength: 5
+          maxLength: 50
+      required:
+        - email
+        - password
+    JwtAuthenticationResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: "Токен доступа, используемый для аутентификации пользователя"
+        refreshToken:
+          type: string
+          description: "Токен обновления, используемый для получения нового токена доступа"
+      required:
+        - accessToken
+        - refreshToken
+    DailyOpenCloseDto:
+      type: object
+      properties:
+        status:
+          type: string
+          description: "Статус данных"
+        from:
+          type: string
+          format: date
+          description: "Дата, к которой относятся данные"
+        symbol:
+          type: string
+          description: "Символ акции или инструмента"
+        open:
+          type: string
+          format: decimal
+          description: "Цена открытия"
+        high:
+          type: string
+          format: decimal
+          description: "Максимальная цена"
+        low:
+          type: string
+          format: decimal
+          description: "Минимальная цена"
+        close:
+          type: string
+          format: decimal
+          description: "Цена закрытия"
+        volume:
+          type: string
+          description: "Объем торгов"
+        afterHours:
+          type: string
+          format: decimal
+          description: "Цена после торгов"
+        preMarket:
+          type: string
+          format: decimal
+          description: "Цена до торгов"
+      required:
+        - status
+        - from
+        - symbol
+        - open
+        - high
+        - low
+        - close
+    DailyDtoBetweenDates:
+      type: object
+      properties:
+        ticker:
+          type: string
+          description: "Тикер акции"
+          maxLength: 50
+        openDate:
+          type: string
+          format: date
+          description: "Дата начала интервала"
+        countDay:
+          type: integer
+          description: "Количество дней для выборки"
+      required:
+        - ticker

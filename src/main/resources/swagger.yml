@@ -1,8 +1,0 @@
-openapi: 3.0.3
-
-info:
-  title: invest_service
-  description: |
-    Документация для работы с API invest_service.
-    Created by: Марсель Алдаров.
-  version: 1.0.0

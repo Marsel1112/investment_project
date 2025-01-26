@@ -12,7 +12,7 @@ import java.io.IOException;
 @Configuration
 public class SwaggerConfig {
     @Bean
-    public OpenAPI customSwaggerDocumentation(@Value("classpath:swagger.yml") Resource openApiResource) {
+    public OpenAPI customSwaggerDocumentation(@Value("classpath:swagger/swagger.yml") Resource openApiResource) {
         try {
             String openApiAsString = new String(openApiResource.getInputStream().readAllBytes());
             return new OpenAPIV3Parser().readContents(openApiAsString,null,null).getOpenAPI();
