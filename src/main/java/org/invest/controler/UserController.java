@@ -6,9 +6,9 @@ import org.invest.client.PolygonClient;
 import org.invest.dto.*;
 import org.invest.entity.User;
 import org.invest.service.DailyOpenCloseService;
+import org.invest.service.TickerService;
 import org.invest.service.auth.AuthService;
 import org.invest.service.UserService;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/user/")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
     private final AuthService authService;
     private final DailyOpenCloseService dailyOpenCloseService;
-    private final PolygonClient feignClient;
+    private final TickerService tickerService;
 
     @PostMapping("/register")
     public ResponseEntity<Long> register(@RequestBody RegisterUserDto registerUserDto) {
@@ -41,34 +41,24 @@ public class UserController {
     }
 
     @GetMapping("/saved")
-    public ResponseEntity<List<DailyOpenCloseDto>> saved(@RequestBody TickerDto tickerDto) {
+    public ResponseEntity<List<DailyOpenCloseDto>> saved(@RequestBody String ticker) {
+        tickerService.validateTicker(ticker);
         Long userId = getUserId();
 
-        List<DailyOpenCloseDto> dailyOpenCloseDtos = dailyOpenCloseService.getDailyOpenClosesByTicker(tickerDto, userId);
+        List<DailyOpenCloseDto> dailyOpenCloseDtoList = dailyOpenCloseService.getDailyOpenClosesByTicker(ticker, userId);
 
-        return ResponseEntity.ok(dailyOpenCloseDtos);
+        return ResponseEntity.ok(dailyOpenCloseDtoList);
     }
 
     @PostMapping("/save")
-    public ResponseEntity<List<DailyOpenCloseDto>> save(@RequestBody DailyOpenCloseDtoBetweenDates betweenDates) {
+    public ResponseEntity<List<DailyOpenCloseDto>> save(@RequestBody DailyDtoBetweenDates betweenDates) {
+        tickerService.validateTicker(betweenDates.getTicker());
         Long userId = getUserId();
 
-        List<DailyOpenCloseDto> dailyOpenCloseDtos =
+        List<DailyOpenCloseDto> dailyOpenCloseDtoList =
                 dailyOpenCloseService.getDailyOpenClosesBetweenDates(betweenDates, userId);
 
-        return ResponseEntity.ok(dailyOpenCloseDtos);
-    }
-
-    @PostMapping("/test")
-    public ResponseEntity<DailyOpenCloseDto> test(@RequestBody DailyOpenCloseDtoBetweenDates betweenDates) {
-
-        System.out.println(betweenDates.getOpenDate().toString());
-        var g = feignClient.getPolygon(betweenDates.getTicker(), betweenDates.getOpenDate());
-
-
-
-
-        return ResponseEntity.ok(g);
+        return ResponseEntity.ok(dailyOpenCloseDtoList);
     }
 
     private Long getUserId() {

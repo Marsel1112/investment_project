@@ -13,4 +13,6 @@ public interface UsersDailyOpenCloseHistoryRepository extends JpaRepository<User
                                                                                                         LocalDate from,
                                                                                                         LocalDate to);
     List<UsersDailyOpenCloseHistory> findByUserIdAndDailyOpenClose_Symbol(Long userId, String symbol);
+
+    boolean existsByUserIdAndDailyOpenClose_SymbolAndDailyOpenClose_DateFrom(Long userId, String symbol, LocalDate dateFrom);
 }

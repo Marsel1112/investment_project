@@ -1,19 +1,18 @@
 package org.invest.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.checkerframework.checker.units.qual.N;
+import org.invest.entity.DailyOpenClose;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DailyOpenCloseDto {
+public class DailyOpenCloseDto implements Comparable<DailyOpenCloseDto> {
 
     private String status;
 
@@ -34,5 +33,10 @@ public class DailyOpenCloseDto {
     private BigDecimal afterHours;
 
     private BigDecimal preMarket;
+
+    @Override
+    public int compareTo(DailyOpenCloseDto o) {
+        return this.from.compareTo(o.from);
+    }
 
 }

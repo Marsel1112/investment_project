@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 
 @ControllerAdvice
 public class ExceptionHandler {
+
     @org.springframework.web.bind.annotation.ExceptionHandler(UserDuplicatedException.class)
     public ResponseEntity<String> handleUserDuplicatedException(UserDuplicatedException exception) {
         return ResponseEntity.badRequest().body(exception.getMessage());
     }
+
     @org.springframework.web.bind.annotation.ExceptionHandler(NotFoundUserException.class)
     public ResponseEntity<String> handleNotFoundUserException(NotFoundUserException exception) {
 
@@ -20,6 +22,16 @@ public class ExceptionHandler {
         exceptionMessage.append(exception.getLoginUser().getPassword()).append(" ");
 
         return ResponseEntity.badRequest().body(exceptionMessage.toString());
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(TooManyDaysException.class)
+    public ResponseEntity<String> tooManyDaysException(TooManyDaysException exception) {
+        return ResponseEntity.badRequest().body(exception.getMessage());
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(TickerNotFoundException.class)
+    public ResponseEntity<String> tickerNotFoundException(TickerNotFoundException exception) {
+        return ResponseEntity.badRequest().body("Тикер акции " + exception.getMessage() + " не найден!");
     }
 
 }
