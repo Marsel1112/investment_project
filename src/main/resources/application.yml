@@ -6,7 +6,7 @@ spring:
     name: investment_project
   datasource:
     url: jdbc:postgresql://localhost:5432/investments_api
-    username: postgres
+    username: ${POSTGRES_USERNAME}
     password: postgres
   jpa:
     hibernate:
