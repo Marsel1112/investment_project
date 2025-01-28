@@ -1,6 +1,6 @@
 package org.invest.client;
 
-import org.invest.config.Feign.FeignConfig;
+import org.invest.config.feign.FeignConfig;
 import org.invest.dto.DailyOpenCloseDto;
 import org.invest.dto.TickerResponse;
 import org.springframework.cloud.openfeign.FeignClient;

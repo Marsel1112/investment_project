@@ -1,4 +1,4 @@
-package org.invest.config.Feign;
+package org.invest.config.feign;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;

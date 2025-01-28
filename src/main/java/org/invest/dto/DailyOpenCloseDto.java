@@ -1,8 +1,6 @@
 package org.invest.dto;
 
 import lombok.*;
-import org.checkerframework.checker.units.qual.N;
-import org.invest.entity.DailyOpenClose;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

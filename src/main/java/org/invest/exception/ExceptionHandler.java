@@ -3,6 +3,8 @@ package org.invest.exception;
 import org.invest.exception.UserResours.NotFoundUserException;
 import org.invest.exception.UserResours.UserDuplicatedException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 @ControllerAdvice
@@ -32,6 +34,16 @@ public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(TickerNotFoundException.class)
     public ResponseEntity<String> tickerNotFoundException(TickerNotFoundException exception) {
         return ResponseEntity.badRequest().body("Тикер акции " + exception.getMessage() + " не найден!");
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<String> tickerNotFoundException(HttpMessageNotReadableException exception) {
+        return ResponseEntity.badRequest().body("Неправильные данные, проверьте дату и числа!");
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(PolygonProhibitedException.class)
+    public ResponseEntity<String> tickerNotFoundException(PolygonProhibitedException exception) {
+        return ResponseEntity.notFound().build();
     }
 
 }

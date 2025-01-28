@@ -1,9 +1,6 @@
-package org.invest.service;
+package org.invest.service.dailyOpenClose;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.invest.client.PolygonClient;
 import org.invest.dto.TickerResponse;
 import org.invest.entity.Ticker;
@@ -11,8 +8,6 @@ import org.invest.exception.TickerNotFoundException;
 import org.invest.maper.TickerMapper;
 import org.invest.repository.TickerRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 
 @Service
@@ -28,6 +23,7 @@ public class TickerService {
         if (ticker == null)
             loadTickers(tickerValue);
     }
+
 
     private void loadTickers(String tickerValue){
         try {

@@ -2,11 +2,10 @@
 package org.invest.controler;
 
 import lombok.RequiredArgsConstructor;
-import org.invest.client.PolygonClient;
 import org.invest.dto.*;
 import org.invest.entity.User;
-import org.invest.service.DailyOpenCloseService;
-import org.invest.service.TickerService;
+import org.invest.service.dailyOpenClose.DailyOpenCloseService;
+import org.invest.service.dailyOpenClose.TickerService;
 import org.invest.service.auth.AuthService;
 import org.invest.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -35,13 +34,12 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<JwtAuthenticationResponse> login(@RequestBody LoginUser loginUser) {
-        JwtAuthenticationResponse jwtAuthenticationResponse =
-                authService.getJwtAuthenticationResponse(loginUser);
-        return ResponseEntity.ok(jwtAuthenticationResponse);
+        JwtAuthenticationResponse response = authService.getJwtAuthenticationResponse(loginUser);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/saved")
-    public ResponseEntity<List<DailyOpenCloseDto>> saved(@RequestBody String ticker) {
+    @GetMapping("/saved/{ticker}")
+    public ResponseEntity<List<DailyOpenCloseDto>> saved(@PathVariable String ticker) {
         tickerService.validateTicker(ticker);
         Long userId = getUserId();
 
@@ -58,7 +56,7 @@ public class UserController {
         List<DailyOpenCloseDto> dailyOpenCloseDtoList =
                 dailyOpenCloseService.getDailyOpenClosesBetweenDates(betweenDates, userId);
 
-        return ResponseEntity.ok(dailyOpenCloseDtoList);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dailyOpenCloseDtoList);
     }
 
     private Long getUserId() {

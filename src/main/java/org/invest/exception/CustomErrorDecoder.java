@@ -13,6 +13,7 @@ public class CustomErrorDecoder implements ErrorDecoder {
 
         return switch (statusCode) {
             case 400 -> new BadRequestException(message);
+            case 403 -> new PolygonProhibitedException("Данные по акции не найдены!");
             case 404 -> new NotFoundException(message);
             case 429 -> new NotFoundException("Слишком большое количество дат," +
                                                 "попробуйте еще раз через пару минут!");

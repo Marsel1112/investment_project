@@ -1,10 +1,8 @@
 package org.invest.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.invest.dto.LoginUser;
 import org.invest.dto.RegisterUserDto;
-import org.invest.entity.DailyOpenClose;
 import org.invest.entity.Role;
 import org.invest.entity.User;
 import org.invest.exception.UserResours.NotFoundUserException;
@@ -15,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,10 +43,6 @@ public class UserService {
                         .dateCreated(LocalDateTime.now())
                         .role(getBasikRole())
                         .build());
-    }
-
-    public User getUserByUserId(Long userId) {
-        return userRepository.getUserById(userId);
     }
 
     private Role getBasikRole(){

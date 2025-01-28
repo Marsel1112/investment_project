@@ -3,10 +3,10 @@ package org.invest.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.invest.dto.DailyDtoBetweenDates;
+import org.invest.dto.HistoryDto;
 import org.invest.entity.DailyOpenClose;
 import org.invest.entity.User;
 import org.invest.entity.UsersDailyOpenCloseHistory;
-import org.invest.repository.DailyOpenCloseRepository;
 import org.invest.repository.UserRepository;
 import org.invest.repository.UsersDailyOpenCloseHistoryRepository;
 import org.springframework.stereotype.Service;
@@ -24,13 +24,12 @@ public class UsersDailyOpenCloseHistoryService {
 
     @Transactional
     public List<DailyOpenClose> getDailyOpenClose(DailyDtoBetweenDates betweenDates, Long userId) {
-        List<UsersDailyOpenCloseHistory> historyList = historyRepository
-                .findByUserIdAndDailyOpenClose_SymbolAndDailyOpenClose_DateFromBetween(userId,
-                                                                                    betweenDates.getTicker(),
-                                                                                    betweenDates.getOpenDate(),
-                                                                                    betweenDates.getOpenDate().plusDays(betweenDates.getCountDay()-1));
+        HistoryDto historyDto = getHistoryDto(userId,
+                                              betweenDates.getTicker(),
+                                              betweenDates.getOpenDate(),
+                                              betweenDates.getOpenDate().plusDays(betweenDates.getCountDay()-1));
 
-
+        List<UsersDailyOpenCloseHistory> historyList = historyRepository.getHistoryByFullHistoryDto(historyDto);
 
         return historyList.stream()
                 .map(UsersDailyOpenCloseHistory::getDailyOpenClose)
@@ -39,14 +38,15 @@ public class UsersDailyOpenCloseHistoryService {
 
     @Transactional
     public List<DailyOpenClose> getUserDailyOpenCloseHistory(Long userId,String symbol) {
+        HistoryDto historyDto = getHistoryDto(userId, symbol,null,null);
         List<UsersDailyOpenCloseHistory> historyList =
-                historyRepository.findByUserIdAndDailyOpenClose_Symbol(userId,symbol);
+                historyRepository.getHistory(historyDto);
         return getDailyOpenClose(historyList);
     }
 
     public boolean existsUserDailyOpenCloseHistory(Long userId, String symbol, LocalDate dateFrom) {
-        return historyRepository
-                .existsByUserIdAndDailyOpenClose_SymbolAndDailyOpenClose_DateFrom(userId,symbol,dateFrom);
+        HistoryDto historyDto = getHistoryDto(userId, symbol,dateFrom,null);
+        return historyRepository.isHistoryEmpty(historyDto);
     }
 
     public void saveUserDailyOpenCloseHistory(Long userId, DailyOpenClose dailyOpenClose) {
@@ -68,5 +68,14 @@ public class UsersDailyOpenCloseHistoryService {
             dailyOpenCloseList.add(history.getDailyOpenClose());
         }
         return dailyOpenCloseList;
+    }
+
+    private HistoryDto getHistoryDto(Long userId, String symbol, LocalDate from, LocalDate to) {
+        return HistoryDto.builder()
+                .userId(userId)
+                .symbol(symbol)
+                .from(from)
+                .to(to)
+                .build();
     }
 }
