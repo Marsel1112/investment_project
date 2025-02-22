@@ -1,4 +1,4 @@
-package org.invest.entity.enum_status_model;
+package org.invest.enums;
 
 public enum RoleStatus {
     ACTIVE,REMOVE

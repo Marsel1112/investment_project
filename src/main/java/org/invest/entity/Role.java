@@ -1,6 +1,6 @@
 package org.invest.entity;
 
-import org.invest.entity.enum_status_model.RoleStatus;
+import org.invest.enums.RoleStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

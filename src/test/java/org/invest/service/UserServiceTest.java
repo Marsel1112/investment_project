@@ -4,7 +4,7 @@ import org.invest.dto.LoginUser;
 import org.invest.dto.RegisterUserDto;
 import org.invest.entity.Role;
 import org.invest.entity.User;
-import org.invest.entity.enum_status_model.RoleStatus;
+import org.invest.enums.RoleStatus;
 import org.invest.exception.UserResours.NotFoundUserException;
 import org.invest.exception.UserResours.UserDuplicatedException;
 import org.invest.repository.RoleRepository;

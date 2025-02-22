@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceFasad {
+public class AuthServiceFacade {
     private final JwtService jwtService;
     private final AccessTokenRepository accessTokenRepository;
     private final RefreshTokenRepository refreshTokenRepository;

@@ -52,8 +52,6 @@ public class UsersDailyOpenCloseHistoryService {
     public void saveUserDailyOpenCloseHistory(Long userId, DailyOpenClose dailyOpenClose) {
         User user = userRepository.getUserById(userId);
 
-        List<UsersDailyOpenCloseHistory> dailyOpenCloseRepositoryList = user.getDailyOpenCloseHistoryList();
-
         historyRepository.save(UsersDailyOpenCloseHistory.builder()
                 .dailyOpenClose(dailyOpenClose)
                 .user(user)

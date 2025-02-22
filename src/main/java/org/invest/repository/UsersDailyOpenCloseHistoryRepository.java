@@ -11,31 +11,31 @@ import java.util.List;
 public interface UsersDailyOpenCloseHistoryRepository extends JpaRepository<UsersDailyOpenCloseHistory, Long> {
 
     default List<UsersDailyOpenCloseHistory> getHistoryByFullHistoryDto(HistoryDto historyDto){
-        return findByUserIdAndDailyOpenClose_SymbolAndDailyOpenClose_DateFromBetween(historyDto.getUserId(),
+        return findByUserIdAndDailyOpenCloseSymbolAndDailyOpenCloseDateFromBetween(historyDto.getUserId(),
                                                                                      historyDto.getSymbol(),
                                                                                      historyDto.getFrom(),
                                                                                      historyDto.getTo());
     }
 
     default boolean isHistoryEmpty(HistoryDto historyDto){
-        return existsByUserIdAndDailyOpenClose_SymbolAndDailyOpenClose_DateFrom(historyDto.getUserId(),
+        return existsByUserIdAndDailyOpenCloseSymbolAndDailyOpenCloseDateFrom(historyDto.getUserId(),
                                                                                 historyDto.getSymbol(),
                                                                                 historyDto.getFrom());
     }
 
     default List<UsersDailyOpenCloseHistory> getHistory(HistoryDto historyDto){
-        return findByUserIdAndDailyOpenClose_Symbol(historyDto.getUserId(),
+        return findByUserIdAndDailyOpenCloseSymbol(historyDto.getUserId(),
                                                     historyDto.getSymbol());
     }
 
 
-    List<UsersDailyOpenCloseHistory> findByUserIdAndDailyOpenClose_SymbolAndDailyOpenClose_DateFromBetween(Long userId,
+    List<UsersDailyOpenCloseHistory> findByUserIdAndDailyOpenCloseSymbolAndDailyOpenCloseDateFromBetween(Long userId,
                                                                                                         String symbol,
                                                                                                         LocalDate from,
                                                                                                         LocalDate to);
 
-    List<UsersDailyOpenCloseHistory> findByUserIdAndDailyOpenClose_Symbol(Long userId, String symbol);
+    List<UsersDailyOpenCloseHistory> findByUserIdAndDailyOpenCloseSymbol(Long userId, String symbol);
 
 
-    boolean existsByUserIdAndDailyOpenClose_SymbolAndDailyOpenClose_DateFrom(Long userId, String symbol, LocalDate dateFrom);
+    boolean existsByUserIdAndDailyOpenCloseSymbolAndDailyOpenCloseDateFrom(Long userId, String symbol, LocalDate dateFrom);
 }

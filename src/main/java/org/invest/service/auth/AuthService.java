@@ -13,24 +13,24 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
     private final UserService userService;
-    private final AuthServiceFasad authServiceFasad;
+    private final AuthServiceFacade authServiceFacade;
 
     public JwtAuthenticationResponse getJwtAuthenticationResponse(LoginUser loginUser) {
         User user = userService.getUserByUserAndPassword(loginUser);
 
         JwtAuthenticationResponse jwtAuthenticationResponse =
-                authServiceFasad.getValidJwtAuthenticationResponseFromDataBase(user);
+                authServiceFacade.getValidJwtAuthenticationResponseFromDataBase(user);
 
         if(jwtAuthenticationResponse != null)
             return jwtAuthenticationResponse;
 
-        RefreshToken refreshToken = authServiceFasad.getValidRefreshTokenFromDataBase(user);
+        RefreshToken refreshToken = authServiceFacade.getValidRefreshTokenFromDataBase(user);
 
         if(refreshToken != null) {
-            AccessToken accessToken = authServiceFasad.getNewAccessTokenByRefreshToken(refreshToken);
+            AccessToken accessToken = authServiceFacade.getNewAccessTokenByRefreshToken(refreshToken);
             return new JwtAuthenticationResponse(accessToken.getValue(),refreshToken.getValue());
         }
 
-        return authServiceFasad.insertJwtAuthenticationResponse(user);
+        return authServiceFacade.insertJwtAuthenticationResponse(user);
     }
 }

@@ -1,17 +1,19 @@
 package org.invest.service.dailyOpenClose;
 
 import lombok.RequiredArgsConstructor;
-import org.invest.client.PolygonClient;
 import org.invest.dto.DailyDtoBetweenDates;
 import org.invest.dto.DailyOpenCloseDto;
 import org.invest.entity.DailyOpenClose;
 
+import org.invest.exception.NotFoundException;
 import org.invest.maper.DailyOpenCloseMapper;
 import org.invest.repository.DailyOpenCloseRepository;
 import org.invest.service.UsersDailyOpenCloseHistoryService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,10 +23,10 @@ public class DailyOpenCloseService {
     private final DailyOpenCloseRepository dailyOpenCloseRepository;
     private final UsersDailyOpenCloseHistoryService historyService;
     private final DailyOpenCloseMapper dailyOpenCloseMapper;
-    private final DailyOpenCloseServiceFasad dailyOpenCloseServiceFasad;
+    private final DailyOpenCloseServiceFacade dailyOpenCloseServiceFacade;
 
     public List<DailyOpenCloseDto> getDailyOpenClosesBetweenDates(DailyDtoBetweenDates betweenDates, Long userId) {
-        dailyOpenCloseServiceFasad.fillDatabaseWithMissingValues(betweenDates);
+        fillDatabaseWithMissingValues(betweenDates);
         fillHistoryWithMissingValues(betweenDates, userId);
 
         List<DailyOpenClose> dailyOpenCloseList = historyService.getDailyOpenClose(betweenDates,userId);
@@ -34,10 +36,34 @@ public class DailyOpenCloseService {
 
     public List<DailyOpenCloseDto> getDailyOpenClosesByTicker(String ticker, Long userId) {
         List<DailyOpenClose> dailyOpenCloseList = historyService.getUserDailyOpenCloseHistory(userId,ticker);
-
         return getDailyOpenCloseDtoList(dailyOpenCloseList);
     }
 
+    private void fillDatabaseWithMissingValues(DailyDtoBetweenDates betweenDates) {
+        String ticker = betweenDates.getTicker();
+        LocalDate startDate = betweenDates.getOpenDate();
+        List<DailyOpenClose> dailyOpenCloseList = new ArrayList<>();
+        for (int i = 0; i < betweenDates.getCountDay(); i++) {
+            LocalDate givenDay = startDate.plusDays(i);
+            dailyOpenCloseList.add(getMissingDailyOpenClose(ticker, givenDay));
+        }
+
+        dailyOpenCloseServiceFacade.saveDailyOpenClose(dailyOpenCloseList);
+    }
+
+    private DailyOpenClose getMissingDailyOpenClose(String ticker,  LocalDate givenDay){
+        DailyOpenClose dailyOpenClose = null;
+        if (!dailyOpenCloseRepository.existsBySymbolAndDateFrom(ticker, givenDay)) {
+            try {
+                dailyOpenClose = dailyOpenCloseServiceFacade.getDailyOpenCloseInFeignClient(ticker, givenDay);
+            } catch (NotFoundException notFoundException) {
+                try {
+                    dailyOpenClose = dailyOpenCloseServiceFacade.getNotFoundDailyOpenClose(ticker, givenDay);
+                } catch (DataIntegrityViolationException ignored) {}
+            }
+        }
+        return dailyOpenClose;
+    }
 
     private void fillHistoryWithMissingValues(DailyDtoBetweenDates betweenDates, Long userId){
         String ticker = betweenDates.getTicker();
