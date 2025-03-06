@@ -7,7 +7,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/investments_api
     username: ${POSTGRES_USERNAME}
-    password: postgres
+    password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -18,8 +18,8 @@ spring:
 
 token:
   signing:
-    key: dfklfrjhekadfwsfsfvdfbsdvgdsdfasdfsfqwetw34efqw23dcvv1312
+    key: ${POSTGRES_SECRET}
   auth:
-    bearer : 8_OCCSW2yBWZ6PkdBAI3ADVOIoORmdwT
+    bearer : ${POLYGON_TOKEN}
 
 
